@@ -1,5 +1,3 @@
-from distutils.command.upload import upload
-from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -14,14 +12,32 @@ class Users(models.Model):
     email = models.EmailField()
     isEmailVerified = models.IntegerField(default=0, null=True)
     isMobilePhoneVerified = models.IntegerField(default=0, null=True)
+    phone_no = models.IntegerField(null=True)
 
     GENDER_CHOOICES = (
-        (1,'M'),
-        (2,'F')
+        ('M','M'),
+        ('F','F'),
     )
-    gender = models.CharField(max_length=1 ,choices=GENDER_CHOOICES, default=1)
-    dob = models.DateField()
-    image = models.ImageField(upload_to="images")
+    gender = models.CharField(max_length=1 ,choices=GENDER_CHOOICES, default='M')
+    dob = models.DateField(null=True)
+    image = models.ImageField(upload_to="images", null=True)
 
 
+class PostModel(models.Model):
+    SKILL_CHOICES = (
+        ('Skilled', 'Skilled'),
+        ('Unskilled', 'Unskilled'),
+        ('Semiskilled', 'Semiskilled'),
+    )
+    skill_keywords = models.CharField(max_length=20, choices=SKILL_CHOICES, default='Skilled')
+    TAGS_CHOICES = (
+        ('mason', 'Mason'),
+        ('carpenter', 'Carpenter'),
+    )
+    tags = models.CharField(max_length=20, choices=TAGS_CHOICES, default='mason')
+    work_id = models.IntegerField(auto_created=True, unique=True)
+    time = models.DateField(auto_now_add=True)
+    description = models.TextField()
+    no_of_workers = models.IntegerField()
 
+    
