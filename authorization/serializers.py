@@ -1,18 +1,22 @@
-import email
-from email.policy import default
-from random import choices
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Users
+
+
+# class LoginSerializer(serializers.ModelSerializer):
+#     username = 
+
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super(MyTokenObtainPairSerializer, cls).get_token(user)
         token['username'] = user.username
         return token
+    
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -26,7 +30,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ('password', 'password2', 'email', 'first_name', 'last_name', 'gender', 'image', 'dob')
+        fields = ('password', 'password2', 'email', 'first_name', 'last_name', 'gender')
         extra_kwargs = {
             'first_name': {'required': True},
             'email': {'required': True},
@@ -57,10 +61,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             user_id = user.id,
             gender = validated_data['gender'],
             email = user.email,
-            image = validated_data['image'],
-            dob=validated_data["dob"],
         )
 
         user.save()
         account.save()
         return account
+
+
+    
