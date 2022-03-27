@@ -6,9 +6,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Users
 
 
-# class LoginSerializer(serializers.ModelSerializer):
-#     username = 
-
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
