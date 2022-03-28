@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import PostModel, Users, PostReplies
 
-# Register your models here.
+
+admin.site.register(PostModel)
+admin.site.register(PostReplies)
+admin.site.register(Users)
+

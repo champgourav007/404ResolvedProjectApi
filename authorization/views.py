@@ -1,14 +1,14 @@
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
-from .models import Users
-from .serializers import RegisterSerializer
+from .models import Users, PostModel, PostReplies
+from .serializers import RegisterSerializer, CreatePostSerializer
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import login
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
 from . import authentication
+from authorization import serializers
 
 
 
@@ -42,3 +42,8 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
+
+class CreatePostView(generics.CreateAPIView):
+    queryset = PostModel.objects.all()
+    permission_classes = [AllowAny,]
+    serializer_class = CreatePostSerializer

@@ -2,18 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Users
+from .models import Users, PostModel, PostReplies
 
-
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
-        token['username'] = user.username
-        return token
-    
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -65,9 +55,24 @@ class RegisterSerializer(serializers.ModelSerializer):
         return account
 
 
-    
-class LoginSerializer(serializers.ModelSerializer):
+
+class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ["username", "password"]
+        model = PostModel
+        # fields = '__all__'
+        exclude = ['work_id', 'is_active']
     
+    def create(self, validated_data):
+        post = PostModel.objects.create(
+            title = validated_data["title"],
+            description = validated_data["description"],
+            post_image = validated_data["post_image"],
+            skill_keywords = validated_data["skill_keywords"],
+            tags = validated_data["tags"],
+            no_of_workers = validated_data["no_of_workers"],
+        )
+        post.work_id = Users.objects.get()
+
+        post.save()
+        return post
+
