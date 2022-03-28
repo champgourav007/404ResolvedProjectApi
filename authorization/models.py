@@ -1,5 +1,3 @@
-from distutils.command.upload import upload
-from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -32,7 +30,7 @@ class PostModel(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     post_image = models.ImageField(upload_to="post_images")
-    work_id = models.IntegerField(auto_created=True, unique=True)
+    work_id = models.IntegerField(null=True)
 
     SKILL_CHOICES = (
         ('Skilled', 'Skilled'),

@@ -55,7 +55,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return account
 
 
-
+#create a post and add the data into the database
 class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostModel
@@ -71,7 +71,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
             tags = validated_data["tags"],
             no_of_workers = validated_data["no_of_workers"],
         )
-        post.work_id = Users.objects.get()
+        post.work_id = 1
 
         post.save()
         return post
