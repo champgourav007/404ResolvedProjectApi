@@ -1,11 +1,14 @@
+from wsgiref import validate
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from .models import Users, PostModel, PostReplies
+from authorization import models
+from datetime import datetime
 
 
-
+#new user resgister serializer
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
             required=True,
@@ -54,25 +57,57 @@ class RegisterSerializer(serializers.ModelSerializer):
         account.save()
         return account
 
+class CreatePostRepliesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostReplies
+        exclude = ["is_selected", "replier_id"]
+
+    def create(self, validated_data):
+        print(validated_data,end="\n\n\n")
+        post = validated_data["post"]
+        post_reply = PostReplies.objects.create(
+            replier_name = validated_data["replier_name"],
+            message = validated_data["message"],
+            post_id = post.id,
+            # replier_id = post.email, can we get user email?
+        )
+        print(post_reply.post_id)
+        post_reply.save()
+        # print(post_reply.email)
+        return post_reply
+    
 
 #create a post and add the data into the database
 class CreatePostSerializer(serializers.ModelSerializer):
+    # post_replies = GetPostRepliesSerializer()
     class Meta:
         model = PostModel
         # fields = '__all__'
-        exclude = ['work_id', 'is_active']
+        exclude = ['post_id', 'is_active']
     
     def create(self, validated_data):
         post = PostModel.objects.create(
             title = validated_data["title"],
             description = validated_data["description"],
-            post_image = validated_data["post_image"],
             skill_keywords = validated_data["skill_keywords"],
             tags = validated_data["tags"],
             no_of_workers = validated_data["no_of_workers"],
+            post_id = self.create_work_id(validated_data["title"]),
+            price = validated_data["price"],
         )
-        post.work_id = 1
-
+        post.post_image1 = validated_data["post_image1"]
         post.save()
         return post
 
+    def create_work_id(self, post_title):
+        post_title = ''.join(post_title.split())
+        id = post_title + str(''.join(str(datetime.now()).split()))
+        return id
+
+#post model serializer
+class GetPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostModel
+        fields = '__all__'
+
+        

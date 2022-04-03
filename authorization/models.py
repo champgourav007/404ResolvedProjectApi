@@ -9,8 +9,8 @@ class Users(models.Model):
     last_name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=255)
     email = models.EmailField()
-    isEmailVerified = models.BooleanField(default=0, null=True)
-    isMobilePhoneVerified = models.BooleanField(default=0, null=True)
+    isEmailVerified = models.BooleanField(default=0)
+    isMobilePhoneVerified = models.BooleanField(default=0)
     phone_no = models.IntegerField(null=True)
 
     GENDER_CHOOICES = (
@@ -29,8 +29,8 @@ class Users(models.Model):
 class PostModel(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    post_image = models.ImageField(upload_to="post_images")
-    work_id = models.IntegerField(null=True)
+    post_image1 = models.ImageField(upload_to="post_images", blank=True)
+    post_id = models.CharField(max_length=255,  blank=True)
 
     SKILL_CHOICES = (
         ('Skilled', 'Skilled'),
@@ -40,25 +40,29 @@ class PostModel(models.Model):
     skill_keywords = models.CharField(max_length=20, choices=SKILL_CHOICES, default='Skilled')
 
     TAGS_CHOICES = (
-        ('mason', 'Mason'),
-        ('carpenter', 'Carpenter'),
-    )
-    tags = models.CharField(max_length=20, choices=TAGS_CHOICES, default='mason')
+        ('Mason', 'Mason'),
+        ('Carpenter', 'Carpenter'),
+        ('Electician', 'Electrician'),
+        ('Others', 'Others')
 
-    post_created_on = models.TimeField(auto_now=True)
-    no_of_workers = models.IntegerField()
+    )
+    tags = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Mason')
+
+    post_created_on = models.DateTimeField(auto_now=True)
+    no_of_workers = models.IntegerField(blank=True)
     is_active = models.BooleanField(default=1, null=True)
+
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+
+    def __str__(self):
+        return f"{self.post_id}"
+
 
 
 #each post has one or more replies
 class PostReplies(models.Model):
     post = models.ForeignKey(PostModel, on_delete=models.CASCADE)
     replier_name = models.CharField(max_length=100)
-    replier_id = models.IntegerField()
+    replier_id = models.EmailField()
     message = models.TextField()
-    is_selected = models.BooleanField(default=0)
-
-
-
-
-    
+    is_selected = models.BooleanField(default=False)
