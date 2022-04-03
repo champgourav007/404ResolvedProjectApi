@@ -80,6 +80,41 @@ class CreatePostRepliesSerializer(serializers.ModelSerializer):
 #create a post and add the data into the database
 class CreatePostSerializer(serializers.ModelSerializer):
     # post_replies = GetPostRepliesSerializer()
+    prices = {
+        "Agriculture" : {
+            "Skilled" : 495,
+            "SemiSkilled" : 455,
+            "Unskilled" : 417,
+        },
+
+        "Mine_Workers" : {
+            "Skilled" : 437,
+            "SemiSkilled" : 546,
+            "Unskilled" : 654,
+        },
+
+        "Road-Workers" : {
+            "Skilled" : 795,
+            "SemiSkilled" : 724,
+            "Unskilled" : 654,
+        },
+
+        "Loding-Unloading" : {
+            "Skilled" : 654,
+            "SemiSkilled" : 654,
+            "Unskilled" : 654,
+        },
+        
+        "Sweeping-Cleaning" : {
+            "Skilled" : 654,
+            "SemiSkilled" : 654,
+            "Unskilled" : 654,
+        },
+
+
+    }
+
+
     class Meta:
         model = PostModel
         # fields = '__all__'
@@ -93,7 +128,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
             tags = validated_data["tags"],
             no_of_workers = validated_data["no_of_workers"],
             post_id = self.create_work_id(validated_data["title"]),
-            price = validated_data["price"],
+            price = self.create_price(validated_data["price"], validated_data["skill_keywords"], validated_data["tags"], validated_data["no_of_workers"]),
         )
         post.post_image1 = validated_data["post_image1"]
         post.save()
@@ -103,6 +138,16 @@ class CreatePostSerializer(serializers.ModelSerializer):
         post_title = ''.join(post_title.split())
         id = post_title + str(''.join(str(datetime.now()).split()))
         return id
+    
+    def create_price(self, input_price, skill, tags, workers):
+        if tags in self.prices:
+            total_price = self.prices[tags][skill] + input_price
+        else:
+            total_price = input_price
+        return total_price*workers
+
+
+
 
 #post model serializer
 class GetPostSerializer(serializers.ModelSerializer):

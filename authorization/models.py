@@ -43,7 +43,12 @@ class PostModel(models.Model):
         ('Mason', 'Mason'),
         ('Carpenter', 'Carpenter'),
         ('Electician', 'Electrician'),
-        ('Others', 'Others')
+        ('Agriculture', 'Agriculture'),
+        ('Mine-Workers', 'Mine-Workers'),
+        ('Road-Workers', 'Road-Workers'),
+        ('Loding-Unloading', 'Loding-Unloading'),
+        ('Sweeping-Cleaning', 'Sweeping-Cleaning'),
+        ('Others', 'Others'),
 
     )
     tags = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Mason')
